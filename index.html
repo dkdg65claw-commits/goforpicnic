@@ -1,233 +1,238 @@
 
-import React, { useState } from 'react';
-import { 
-  ChevronLeft, Clock, Utensils, ShoppingBag, Coffee, Bed, 
-  Wine, Moon, Sun, Bath, CheckSquare, Heart, Info, 
-  Calendar, Gift, Smile, Car, BookOpen, Palette, Bike
-} from 'lucide-react';
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>우리가족 일정표</title>
+    <!-- Tailwind CSS 불러오기 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React 및 ReactDOM 불러오기 -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <!-- JSX 변환을 위한 Babel 불러오기 -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-100">
+    <div id="root"></div>
 
-const App = () => {
-  const [currentView, setCurrentView] = useState('list'); // 'list', 'yeouido', 'children'
+    <script type="text/babel">
+        const { useState } = React;
 
-  // ==========================================
-  // 여의도 호캉스 데이터
-  // ==========================================
-  const yeouidoItinerary = [
-    { type: 'day', text: '금요일 (1일차)' },
-    { time: '11:00', title: '여의도 도착 & 첫 만찬', desc: '진주집(시원한 국수) 또는 이도맨숀(고급 한우). 웨이팅 없는 완벽한 타이밍에 점심 식사.', icon: <Utensils className="w-5 h-5 text-amber-600" /> },
-    { time: '12:30', title: '쇼핑몰 산책 데이트', desc: '더현대 서울 또는 IFC몰 산책. 아이들 없이 가벼운 발걸음으로 두 사람만을 위한 시간.', icon: <ShoppingBag className="w-5 h-5 text-amber-600" /> },
-    { time: '14:00', title: '체크인 & 애프터눈 티', desc: '이그제큐티브 라운지(37층) 체크인 후 통창 한강 뷰와 함께 여유로운 티타임 시작.', highlight: '애프터눈 티 이용 시간: 14:00 - 16:00', icon: <Coffee className="w-5 h-5 text-amber-600" /> },
-    { time: '15:30', title: '객실 휴식', desc: '배정받은 객실에서 푹신한 침구에 기대어 온전한 둘만의 정비 시간.', icon: <Bed className="w-5 h-5 text-amber-600" /> },
-    { time: '17:00', title: '이브닝 칵테일 (해피아워)', desc: '노을 지는 한강을 배경으로 무제한 주류와 핫푸드 즐기기.', highlight: '평일 이브닝 칵테일: 17:00 - 20:00 (혼잡 시 2부제 운영)', icon: <Wine className="w-5 h-5 text-amber-600" /> },
-    { time: '19:30', title: '야간 산책 및 자유 시간', desc: '배를 든든히 채운 뒤 여의도 한강공원 밤바람 맞기 혹은 IFC몰 심야 영화 관람.', icon: <Moon className="w-5 h-5 text-amber-600" /> },
-    { type: 'day', text: '토요일 (2일차)' },
-    { time: '08:30', title: '평화로운 아침, 조식', desc: '누구도 챙길 필요 없는 느긋한 아침. 따뜻한 커피와 오믈렛으로 하루 시작.', highlight: '라운지 조식 시간: 06:30 - 10:30', icon: <Sun className="w-5 h-5 text-amber-600" /> },
-    { time: '10:00', title: '스파 및 수영', desc: '호텔 실내 수영장에서 가벼운 운동을 하거나, 객실 욕조에서 따뜻한 반신욕 즐기기.', icon: <Bath className="w-5 h-5 text-amber-600" /> },
-    { time: '11:30', title: '여유로운 체크아웃', desc: '라운지에서 혼잡함 없이 편안하게 체크아웃 진행.', icon: <CheckSquare className="w-5 h-5 text-amber-600" /> },
-    { time: '12:00', title: '마지막 만찬 & 귀가', desc: '천지명(고급 양고기) 또는 마마된장(깔끔한 한식). 든든하게 식사 후 일상으로 복귀.', icon: <Heart className="w-5 h-5 text-amber-600" /> },
-  ];
+        // 아이콘 SVG 컴포넌트들
+        const IconChevronLeft = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="15 18 9 12 15 6"></polyline></svg>;
+        const IconClock = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>;
+        const IconUtensils = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"></path><path d="M7 2v20"></path><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"></path></svg>;
+        const IconShoppingBag = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>;
+        const IconCoffee = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>;
+        const IconBed = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M2 4v16"></path><path d="M2 8h18a2 2 0 0 1 2 2v10"></path><path d="M2 17h20"></path><path d="M6 8v9"></path></svg>;
+        const IconWine = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M8 22h8"></path><path d="M7 10h10"></path><path d="M12 15v7"></path><path d="M12 15a5 5 0 0 0 5-5c0-2-.5-4-2-8H9c-1.5 4-2 6-2 8a5 5 0 0 0 5 5Z"></path></svg>;
+        const IconMoon = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>;
+        const IconSun = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>;
+        const IconBath = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M9 6 6.5 3.5a1.5 1.5 0 0 0-1-.5C4.683 3 4 3.683 4 4.5V17a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5"></path><line x1="10" y1="5" x2="8" y2="7"></line><line x1="2" y1="12" x2="22" y2="12"></line><line x1="7" y1="19" x2="7" y2="21"></line><line x1="17" y1="19" x2="17" y2="21"></line></svg>;
+        const IconCheckSquare = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>;
+        const IconHeart = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg>;
+        const IconInfo = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>;
+        const IconCalendar = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>;
+        const IconGift = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path></svg>;
+        const IconSmile = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>;
+        const IconCar = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"></path><circle cx="7" cy="17" r="2"></circle><path d="M9 17h6"></path><circle cx="17" cy="17" r="2"></circle></svg>;
+        const IconBookOpen = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>;
+        const IconPalette = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="13.5" cy="6.5" r=".5"></circle><circle cx="17.5" cy="10.5" r=".5"></circle><circle cx="8.5" cy="7.5" r=".5"></circle><circle cx="6.5" cy="12.5" r=".5"></circle><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"></path></svg>;
+        const IconBike = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="5.5" cy="17.5" r="3.5"></circle><circle cx="18.5" cy="17.5" r="3.5"></circle><path d="M15 6a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-3 11.5V14l-3-3 4-3 2 3h2"></path></svg>;
 
-  // ==========================================
-  // 어린이날 주간 나들이 데이터
-  // ==========================================
-  const childrenItinerary = [
-    { type: 'day', text: '5월 1일 : 아차산 & 어린이대공원' },
-    { time: '11:40', title: '주차 및 점심 픽업', desc: '어린이대공원 후문 주차. 어른용 매콤한 신토불이 떡볶이와 주이, 로이를 위한 바르다김선생(또는 김밥천국) 참치/돈까스 김밥 포장.', icon: <Car className="w-5 h-5 text-sky-600" /> },
-    { time: '12:20', title: '아차산 산책 & 숲속도서관', desc: '포장한 음식 맛있게 먹고, 숲속도서관에서 맑은 공기 마시며 동화책 읽기.', icon: <BookOpen className="w-5 h-5 text-sky-600" /> },
-    { time: '14:30', title: '어린이대공원 놀이 타임', desc: '산에서 내려와 놀이기구 탑승! 한창 뛰어놀 나이인 주이(8)와 로이(6)가 놀기 제격인 상상나라(체험형 전시실/야외놀이터) 방문.', icon: <Smile className="w-5 h-5 text-sky-600" /> },
-    { time: '18:00', title: '저녁 식사 (멕시칼리)', desc: '맛있는 멕시칼리에서 저녁 식사 후 든든하게 귀가.', icon: <Utensils className="w-5 h-5 text-sky-600" /> },
-    
-    { type: 'day', text: '5월 2일 : DDP & 완구거리' },
-    { time: '11:00', title: 'DDP 어린이 디자인 페스티벌', desc: '생각 디자인 캔버스(미술 좋아하는 주이에게 추천!), 피크닉 패밀리 라이브러리, 무궁화 꽃이 피었습니다(에너지 넘치는 로이에게 추천!) 등 참여하기.', icon: <Palette className="w-5 h-5 text-sky-600" /> },
-    { time: '14:00', title: '늦은 점심 (에베레스트 커리)', desc: '맵지 않고 달콤한 치킨 마크니와 버터 난, 갈릭 난으로 아이들도 맛있게 커리 즐기기.', icon: <Utensils className="w-5 h-5 text-sky-600" /> },
-    { time: '15:30', title: '창신동 완구거리 플렉스', desc: '식사 후 완구거리로 이동! 5월 3일 집콕 놀이를 대비해 주이와 로이 장난감 각자 하나씩 고르기.', icon: <Gift className="w-5 h-5 text-sky-600" /> },
-    { time: '18:00', title: '저녁 식사 및 귀가', desc: '신나게 놀고 자유롭게 저녁 식사 후 귀가.', icon: <Moon className="w-5 h-5 text-sky-600" /> },
-    
-    { type: 'day', text: '5월 5일 : 올림픽공원 피크닉' },
-    { time: '자유', title: '올림픽공원 자전거 타기', desc: '진짜 어린이날은 올림픽공원에 가서 주이, 로이와 함께 여유롭게 자전거 타며 힐링하기.', icon: <Bike className="w-5 h-5 text-sky-600" /> },
-  ];
 
-  // ==========================================
-  // 렌더링: 목록 화면
-  // ==========================================
-  const renderList = () => (
-    <div className="min-h-screen bg-slate-100 p-5 font-sans pb-10">
-      <header className="pt-8 pb-6">
-        <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight">우리가족 일정표</h1>
-        <p className="text-slate-500 mt-2 text-sm">기대되는 앞으로의 나들이 계획들입니다.</p>
-      </header>
+        const App = () => {
+            const [currentView, setCurrentView] = useState('list'); // 'list', 'yeouido', 'children'
 
-      <div className="space-y-4">
-        {/* 여의도 호캉스 카드 */}
-        <div 
-          onClick={() => setCurrentView('yeouido')}
-          className="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 cursor-pointer hover:shadow-md transition-all group relative overflow-hidden"
-        >
-          <div className="absolute top-0 right-0 w-24 h-24 bg-amber-50 rounded-bl-full -z-0 opacity-50 group-hover:scale-110 transition-transform"></div>
-          <div className="relative z-10">
-            <div className="flex justify-between items-start mb-3">
-              <span className="bg-amber-100 text-amber-800 text-xs font-bold px-2.5 py-1 rounded-md flex items-center gap-1">
-                <Heart className="w-3 h-3" /> 부부 데이트
-              </span>
-              <span className="text-slate-400 text-xs font-medium">1박 2일</span>
-            </div>
-            <h2 className="text-xl font-bold text-slate-800 mb-1 group-hover:text-amber-600 transition-colors">여의도 콘래드 호캉스</h2>
-            <p className="text-slate-500 text-sm flex items-center gap-1.5 mb-4">
-              <Calendar className="w-4 h-4" /> 오붓한 금요일 ~ 토요일
-            </p>
-            <div className="flex -space-x-2">
-              <div className="w-8 h-8 rounded-full bg-amber-200 border-2 border-white flex items-center justify-center text-amber-700 text-xs font-bold shadow-sm">아빠</div>
-              <div className="w-8 h-8 rounded-full bg-rose-200 border-2 border-white flex items-center justify-center text-rose-700 text-xs font-bold shadow-sm">엄마</div>
-            </div>
-          </div>
-        </div>
+            // 여의도 호캉스 데이터
+            const yeouidoItinerary = [
+                { type: 'day', text: '금요일 (1일차)' },
+                { time: '11:00', title: '여의도 도착 & 첫 만찬', desc: '진주집(시원한 국수) 또는 이도맨숀(고급 한우). 웨이팅 없는 완벽한 타이밍에 점심 식사.', icon: <IconUtensils className="w-5 h-5 text-amber-600" /> },
+                { time: '12:30', title: '쇼핑몰 산책 데이트', desc: '더현대 서울 또는 IFC몰 산책. 아이들 없이 가벼운 발걸음으로 두 사람만을 위한 시간.', icon: <IconShoppingBag className="w-5 h-5 text-amber-600" /> },
+                { time: '14:00', title: '체크인 & 애프터눈 티', desc: '이그제큐티브 라운지(37층) 체크인 후 통창 한강 뷰와 함께 여유로운 티타임 시작.', highlight: '애프터눈 티 이용 시간: 14:00 - 16:00', icon: <IconCoffee className="w-5 h-5 text-amber-600" /> },
+                { time: '15:30', title: '객실 휴식', desc: '배정받은 객실에서 푹신한 침구에 기대어 온전한 둘만의 정비 시간.', icon: <IconBed className="w-5 h-5 text-amber-600" /> },
+                { time: '17:00', title: '이브닝 칵테일 (해피아워)', desc: '노을 지는 한강을 배경으로 무제한 주류와 핫푸드 즐기기.', highlight: '평일 이브닝 칵테일: 17:00 - 20:00 (혼잡 시 2부제 운영)', icon: <IconWine className="w-5 h-5 text-amber-600" /> },
+                { time: '19:30', title: '야간 산책 및 자유 시간', desc: '배를 든든히 채운 뒤 여의도 한강공원 밤바람 맞기 혹은 IFC몰 심야 영화 관람.', icon: <IconMoon className="w-5 h-5 text-amber-600" /> },
+                { type: 'day', text: '토요일 (2일차)' },
+                { time: '08:30', title: '평화로운 아침, 조식', desc: '누구도 챙길 필요 없는 느긋한 아침. 따뜻한 커피와 오믈렛으로 하루 시작.', highlight: '라운지 조식 시간: 06:30 - 10:30', icon: <IconSun className="w-5 h-5 text-amber-600" /> },
+                { time: '10:00', title: '스파 및 수영', desc: '호텔 실내 수영장에서 가벼운 운동을 하거나, 객실 욕조에서 따뜻한 반신욕 즐기기.', icon: <IconBath className="w-5 h-5 text-amber-600" /> },
+                { time: '11:30', title: '여유로운 체크아웃', desc: '라운지에서 혼잡함 없이 편안하게 체크아웃 진행.', icon: <IconCheckSquare className="w-5 h-5 text-amber-600" /> },
+                { time: '12:00', title: '마지막 만찬 & 귀가', desc: '천지명(고급 양고기) 또는 마마된장(깔끔한 한식). 든든하게 식사 후 일상으로 복귀.', icon: <IconHeart className="w-5 h-5 text-amber-600" /> },
+            ];
 
-        {/* 어린이날 나들이 카드 */}
-        <div 
-          onClick={() => setCurrentView('children')}
-          className="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 cursor-pointer hover:shadow-md transition-all group relative overflow-hidden"
-        >
-          <div className="absolute top-0 right-0 w-24 h-24 bg-sky-50 rounded-bl-full -z-0 opacity-50 group-hover:scale-110 transition-transform"></div>
-          <div className="relative z-10">
-            <div className="flex justify-between items-start mb-3">
-              <span className="bg-sky-100 text-sky-800 text-xs font-bold px-2.5 py-1 rounded-md flex items-center gap-1">
-                <Smile className="w-3 h-3" /> 가족 나들이
-              </span>
-              <span className="text-slate-400 text-xs font-medium">다양한 코스</span>
-            </div>
-            <h2 className="text-xl font-bold text-slate-800 mb-1 group-hover:text-sky-600 transition-colors">어린이날 주간 대작전!</h2>
-            <p className="text-slate-500 text-sm flex items-center gap-1.5 mb-4">
-              <Calendar className="w-4 h-4" /> 5월 1일, 2일, 5일 (총 3일 일정)
-            </p>
-            <div className="flex -space-x-2">
-              <div className="w-8 h-8 rounded-full bg-amber-200 border-2 border-white flex items-center justify-center text-amber-700 text-xs font-bold shadow-sm">아빠</div>
-              <div className="w-8 h-8 rounded-full bg-rose-200 border-2 border-white flex items-center justify-center text-rose-700 text-xs font-bold shadow-sm">엄마</div>
-              <div className="w-8 h-8 rounded-full bg-sky-200 border-2 border-white flex items-center justify-center text-sky-700 text-[11px] font-bold shadow-sm">주이</div>
-              <div className="w-8 h-8 rounded-full bg-emerald-200 border-2 border-white flex items-center justify-center text-emerald-700 text-[11px] font-bold shadow-sm">로이</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+            // 어린이날 주간 나들이 데이터
+            const childrenItinerary = [
+                { type: 'day', text: '5월 1일 : 아차산 & 어린이대공원' },
+                { time: '11:40', title: '주차 및 점심 픽업', desc: '어린이대공원 후문 주차. 어른용 매콤한 신토불이 떡볶이와 주이, 로이를 위한 바르다김선생(또는 김밥천국) 참치/돈까스 김밥 포장.', icon: <IconCar className="w-5 h-5 text-sky-600" /> },
+                { time: '12:20', title: '아차산 산책 & 숲속도서관', desc: '포장한 음식 맛있게 먹고, 숲속도서관에서 맑은 공기 마시며 동화책 읽기.', icon: <IconBookOpen className="w-5 h-5 text-sky-600" /> },
+                { time: '14:30', title: '어린이대공원 놀이 타임', desc: '산에서 내려와 놀이기구 탑승! 한창 뛰어놀 나이인 주이(8)와 로이(6)가 놀기 제격인 상상나라(체험형 전시실/야외놀이터) 방문.', icon: <IconSmile className="w-5 h-5 text-sky-600" /> },
+                { time: '18:00', title: '저녁 식사 (멕시칼리)', desc: '맛있는 멕시칼리에서 저녁 식사 후 든든하게 귀가.', icon: <IconUtensils className="w-5 h-5 text-sky-600" /> },
+                
+                { type: 'day', text: '5월 2일 : DDP & 완구거리' },
+                { time: '11:00', title: 'DDP 어린이 디자인 페스티벌', desc: '생각 디자인 캔버스(미술 좋아하는 주이에게 추천!), 피크닉 패밀리 라이브러리, 무궁화 꽃이 피었습니다(에너지 넘치는 로이에게 추천!) 등 참여하기.', icon: <IconPalette className="w-5 h-5 text-sky-600" /> },
+                { time: '14:00', title: '늦은 점심 (에베레스트 커리)', desc: '맵지 않고 달콤한 치킨 마크니와 버터 난, 갈릭 난으로 아이들도 맛있게 커리 즐기기.', icon: <IconUtensils className="w-5 h-5 text-sky-600" /> },
+                { time: '15:30', title: '창신동 완구거리 플렉스', desc: '식사 후 완구거리로 이동! 5월 3일 집콕 놀이를 대비해 주이와 로이 장난감 각자 하나씩 고르기.', icon: <IconGift className="w-5 h-5 text-sky-600" /> },
+                { time: '18:00', title: '저녁 식사 및 귀가', desc: '신나게 놀고 자유롭게 저녁 식사 후 귀가.', icon: <IconMoon className="w-5 h-5 text-sky-600" /> },
+                
+                { type: 'day', text: '5월 5일 : 올림픽공원 피크닉' },
+                { time: '자유', title: '올림픽공원 자전거 타기', desc: '진짜 어린이날은 올림픽공원에 가서 주이, 로이와 함께 여유롭게 자전거 타며 힐링하기.', icon: <IconBike className="w-5 h-5 text-sky-600" /> },
+            ];
 
-  // ==========================================
-  // 렌더링: 상세 타임라인 (공통 컴포넌트)
-  // ==========================================
-  const renderTimeline = (title, subtitle, colorTheme, data, isYeouido) => {
-    const isAmber = colorTheme === 'amber';
-    const bgHeader = isAmber ? 'bg-slate-900' : 'bg-sky-600';
-    const bgIcon = isAmber ? 'bg-amber-50' : 'bg-sky-50';
-    const lineGradient = isAmber ? 'from-amber-200 via-slate-200 to-amber-200' : 'from-sky-200 via-slate-200 to-sky-200';
-    const dayBadgeBg = isAmber ? 'bg-amber-500' : 'bg-sky-500';
+            const renderList = () => (
+                <div className="min-h-screen bg-slate-100 p-5 font-sans pb-10">
+                    <header className="pt-8 pb-6">
+                        <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight">우리가족 일정표</h1>
+                        <p className="text-slate-500 mt-2 text-sm">기대되는 앞으로의 나들이 계획들입니다.</p>
+                    </header>
 
-    return (
-      <div className="min-h-screen bg-slate-50 text-slate-800 font-sans pb-12 animate-in slide-in-from-right-4 duration-300">
-        {/* Header */}
-        <header className={`${bgHeader} text-white pt-12 pb-8 px-6 rounded-b-[2.5rem] shadow-lg relative overflow-hidden`}>
-          <button 
-            onClick={() => setCurrentView('list')}
-            className="absolute top-4 left-4 p-2 bg-white/10 hover:bg-white/20 rounded-full backdrop-blur-sm transition-colors flex items-center"
-          >
-            <ChevronLeft className="w-6 h-6 text-white" />
-          </button>
-          
-          <div className="relative z-10 flex flex-col items-center mt-2 text-center">
-            <h1 className="text-3xl font-extrabold mb-2 tracking-tight">{title}</h1>
-            <p className="text-white/80 font-medium text-sm">{subtitle}</p>
-          </div>
-        </header>
-
-        <main className="max-w-md mx-auto p-5 -mt-4 relative z-20">
-          
-          {/* 여의도일 경우에만 라운지 정보 노출 */}
-          {isYeouido && (
-            <div className="bg-white rounded-2xl shadow-md border border-amber-100 p-5 mb-8 flex flex-col gap-3">
-              <div className="flex items-center gap-2 mb-1">
-                <Info className="w-5 h-5 text-amber-500" />
-                <h2 className="text-lg font-bold text-slate-800">콘래드 라운지 혜택 (37F)</h2>
-              </div>
-              <div className="grid grid-cols-1 gap-2 text-sm">
-                <div className="flex justify-between items-center bg-slate-50 p-2.5 rounded-lg border border-slate-100">
-                  <span className="font-semibold text-slate-700">애프터눈 티</span>
-                  <span className="text-amber-700 font-medium">매일 14:00 - 16:00</span>
-                </div>
-                <div className="flex justify-between items-center bg-slate-50 p-2.5 rounded-lg border border-slate-100">
-                  <span className="font-semibold text-slate-700">이브닝 칵테일</span>
-                  <span className="text-amber-700 font-medium">금 17:00 - 20:00</span>
-                </div>
-                <div className="flex justify-between items-center bg-slate-50 p-2.5 rounded-lg border border-slate-100">
-                  <span className="font-semibold text-slate-700">조식</span>
-                  <span className="text-amber-700 font-medium">매일 06:30 - 10:30</span>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Continuous Timeline */}
-          <div className={`relative before:absolute before:inset-0 before:ml-[1.4rem] before:h-full before:w-0.5 before:bg-gradient-to-b ${lineGradient}`}>
-            {data.map((item, index) => {
-              if (item.type === 'day') {
-                return (
-                  <div key={index} className="relative z-10 flex items-center py-6">
-                    <div className={`${dayBadgeBg} text-white px-4 py-1.5 rounded-full text-sm font-bold shadow-md ml-0 border-2 border-white`}>
-                      {item.text}
-                    </div>
-                  </div>
-                );
-              }
-
-              return (
-                <div key={index} className="relative flex items-start mb-8 group">
-                  <div className={`flex items-center justify-center w-12 h-12 rounded-full border-4 border-white ${bgIcon} shrink-0 shadow-sm relative z-10`}>
-                    {item.icon}
-                  </div>
-                  
-                  <div className="ml-4 flex-1">
-                    <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 group-hover:border-slate-300 group-hover:shadow-md transition-all">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Clock className="w-4 h-4 text-slate-400" />
-                        <span className="text-slate-800 font-black text-lg tracking-tight">{item.time}</span>
-                      </div>
-                      <h3 className="font-bold text-slate-800 text-base mb-2">{item.title}</h3>
-                      <p className="text-slate-600 text-sm leading-relaxed">{item.desc}</p>
-                      
-                      {item.highlight && (
-                        <div className={`mt-3 ${isAmber ? 'bg-amber-50 border-amber-100 text-amber-800' : 'bg-sky-50 border-sky-100 text-sky-800'} border text-xs font-semibold px-3 py-2 rounded-lg flex items-center gap-2`}>
-                          <Info className="w-3.5 h-3.5" />
-                          {item.highlight}
+                    <div className="space-y-4">
+                        {/* 여의도 호캉스 카드 */}
+                        <div onClick={() => setCurrentView('yeouido')} className="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 cursor-pointer hover:shadow-md transition-all group relative overflow-hidden">
+                            <div className="absolute top-0 right-0 w-24 h-24 bg-amber-50 rounded-bl-full opacity-50 group-hover:scale-110 transition-transform"></div>
+                            <div className="relative z-10">
+                                <div className="flex justify-between items-start mb-3">
+                                    <span className="bg-amber-100 text-amber-800 text-xs font-bold px-2.5 py-1 rounded-md flex items-center gap-1">
+                                        <IconHeart className="w-3 h-3" /> 부부 데이트
+                                    </span>
+                                    <span className="text-slate-400 text-xs font-medium">1박 2일</span>
+                                </div>
+                                <h2 className="text-xl font-bold text-slate-800 mb-1 group-hover:text-amber-600 transition-colors">여의도 콘래드 호캉스</h2>
+                                <p className="text-slate-500 text-sm flex items-center gap-1.5 mb-4">
+                                    <IconCalendar className="w-4 h-4" /> 오붓한 금요일 ~ 토요일
+                                </p>
+                                <div className="flex -space-x-2">
+                                    <div className="w-8 h-8 rounded-full bg-amber-200 border-2 border-white flex items-center justify-center text-amber-700 text-xs font-bold shadow-sm">아빠</div>
+                                    <div className="w-8 h-8 rounded-full bg-rose-200 border-2 border-white flex items-center justify-center text-rose-700 text-xs font-bold shadow-sm">엄마</div>
+                                </div>
+                            </div>
                         </div>
-                      )}
+
+                        {/* 어린이날 나들이 카드 */}
+                        <div onClick={() => setCurrentView('children')} className="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 cursor-pointer hover:shadow-md transition-all group relative overflow-hidden">
+                            <div className="absolute top-0 right-0 w-24 h-24 bg-sky-50 rounded-bl-full opacity-50 group-hover:scale-110 transition-transform"></div>
+                            <div className="relative z-10">
+                                <div className="flex justify-between items-start mb-3">
+                                    <span className="bg-sky-100 text-sky-800 text-xs font-bold px-2.5 py-1 rounded-md flex items-center gap-1">
+                                        <IconSmile className="w-3 h-3" /> 가족 나들이
+                                    </span>
+                                    <span className="text-slate-400 text-xs font-medium">다양한 코스</span>
+                                </div>
+                                <h2 className="text-xl font-bold text-slate-800 mb-1 group-hover:text-sky-600 transition-colors">어린이날 주간 대작전!</h2>
+                                <p className="text-slate-500 text-sm flex items-center gap-1.5 mb-4">
+                                    <IconCalendar className="w-4 h-4" /> 5월 1일, 2일, 5일 (총 3일)
+                                </p>
+                                <div className="flex -space-x-2">
+                                    <div className="w-8 h-8 rounded-full bg-amber-200 border-2 border-white flex items-center justify-center text-amber-700 text-xs font-bold shadow-sm">아빠</div>
+                                    <div className="w-8 h-8 rounded-full bg-rose-200 border-2 border-white flex items-center justify-center text-rose-700 text-xs font-bold shadow-sm">엄마</div>
+                                    <div className="w-8 h-8 rounded-full bg-sky-200 border-2 border-white flex items-center justify-center text-sky-700 text-[11px] font-bold shadow-sm">주이</div>
+                                    <div className="w-8 h-8 rounded-full bg-emerald-200 border-2 border-white flex items-center justify-center text-emerald-700 text-[11px] font-bold shadow-sm">로이</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                  </div>
                 </div>
-              );
-            })}
-          </div>
-        </main>
-      </div>
-    );
-  };
+            );
 
-  return (
-    <div className="max-w-md mx-auto relative overflow-hidden bg-white min-h-screen shadow-2xl border-x border-slate-100">
-      {currentView === 'list' && renderList()}
-      {currentView === 'yeouido' && renderTimeline(
-        '여의도 부부 휴식', 
-        '아이들 없이 온전히 서로에게 집중하는 시간', 
-        'amber', 
-        yeouidoItinerary, 
-        true
-      )}
-      {currentView === 'children' && renderTimeline(
-        '어린이날 대작전!', 
-        '주이, 로이와 함께하는 완벽한 나들이', 
-        'sky', 
-        childrenItinerary, 
-        false
-      )}
-    </div>
-  );
-};
+            const renderTimeline = (title, subtitle, colorTheme, data, isYeouido) => {
+                const isAmber = colorTheme === 'amber';
+                const bgHeader = isAmber ? 'bg-slate-900' : 'bg-sky-600';
+                const bgIcon = isAmber ? 'bg-amber-50' : 'bg-sky-50';
+                const lineGradient = isAmber ? 'from-amber-200 via-slate-200 to-amber-200' : 'from-sky-200 via-slate-200 to-sky-200';
+                const dayBadgeBg = isAmber ? 'bg-amber-500' : 'bg-sky-500';
 
-export default App;
+                return (
+                    <div className="min-h-screen bg-slate-50 text-slate-800 font-sans pb-12">
+                        <header className={`${bgHeader} text-white pt-12 pb-8 px-6 rounded-b-[2.5rem] shadow-lg relative overflow-hidden`}>
+                            <button onClick={() => setCurrentView('list')} className="absolute top-4 left-4 p-2 bg-white/10 hover:bg-white/20 rounded-full transition-colors flex items-center">
+                                <IconChevronLeft className="w-6 h-6 text-white" />
+                            </button>
+                            <div className="relative z-10 flex flex-col items-center mt-2 text-center">
+                                <h1 className="text-3xl font-extrabold mb-2 tracking-tight">{title}</h1>
+                                <p className="text-white/80 font-medium text-sm">{subtitle}</p>
+                            </div>
+                        </header>
+
+                        <main className="max-w-md mx-auto p-5 -mt-4 relative z-20">
+                            {isYeouido && (
+                                <div className="bg-white rounded-2xl shadow-md border border-amber-100 p-5 mb-8 flex flex-col gap-3">
+                                    <div className="flex items-center gap-2 mb-1">
+                                        <IconInfo className="w-5 h-5 text-amber-500" />
+                                        <h2 className="text-lg font-bold text-slate-800">콘래드 라운지 혜택 (37F)</h2>
+                                    </div>
+                                    <div className="grid grid-cols-1 gap-2 text-sm">
+                                        <div className="flex justify-between items-center bg-slate-50 p-2.5 rounded-lg border border-slate-100">
+                                            <span className="font-semibold text-slate-700">애프터눈 티</span>
+                                            <span className="text-amber-700 font-medium">매일 14:00 - 16:00</span>
+                                        </div>
+                                        <div className="flex justify-between items-center bg-slate-50 p-2.5 rounded-lg border border-slate-100">
+                                            <span className="font-semibold text-slate-700">이브닝 칵테일</span>
+                                            <span className="text-amber-700 font-medium">금 17:00 - 20:00</span>
+                                        </div>
+                                        <div className="flex justify-between items-center bg-slate-50 p-2.5 rounded-lg border border-slate-100">
+                                            <span className="font-semibold text-slate-700">조식</span>
+                                            <span className="text-amber-700 font-medium">매일 06:30 - 10:30</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            <div className={`relative before:absolute before:inset-0 before:ml-[1.4rem] before:h-full before:w-0.5 before:bg-gradient-to-b ${lineGradient}`}>
+                                {data.map((item, index) => {
+                                    if (item.type === 'day') {
+                                        return (
+                                            <div key={index} className="relative z-10 flex items-center py-6">
+                                                <div className={`${dayBadgeBg} text-white px-4 py-1.5 rounded-full text-sm font-bold shadow-md ml-0 border-2 border-white`}>
+                                                    {item.text}
+                                                </div>
+                                            </div>
+                                        );
+                                    }
+                                    return (
+                                        <div key={index} className="relative flex items-start mb-8 group">
+                                            <div className={`flex items-center justify-center w-12 h-12 rounded-full border-4 border-white ${bgIcon} shrink-0 shadow-sm relative z-10`}>
+                                                {item.icon}
+                                            </div>
+                                            <div className="ml-4 flex-1">
+                                                <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 transition-all">
+                                                    <div className="flex items-center gap-2 mb-2">
+                                                        <IconClock className="w-4 h-4 text-slate-400" />
+                                                        <span className="text-slate-800 font-black text-lg tracking-tight">{item.time}</span>
+                                                    </div>
+                                                    <h3 className="font-bold text-slate-800 text-base mb-2">{item.title}</h3>
+                                                    <p className="text-slate-600 text-sm leading-relaxed">{item.desc}</p>
+                                                    
+                                                    {item.highlight && (
+                                                        <div className={`mt-3 ${isAmber ? 'bg-amber-50 border-amber-100 text-amber-800' : 'bg-sky-50 border-sky-100 text-sky-800'} border text-xs font-semibold px-3 py-2 rounded-lg flex items-center gap-2`}>
+                                                            <IconInfo className="w-3.5 h-3.5" />
+                                                            {item.highlight}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </main>
+                    </div>
+                );
+            };
+
+            return (
+                <div className="max-w-md mx-auto relative overflow-hidden bg-white min-h-screen shadow-2xl border-x border-slate-100">
+                    {currentView === 'list' && renderList()}
+                    {currentView === 'yeouido' && renderTimeline('여의도 부부 휴식', '아이들 없이 온전히 서로에게 집중하는 시간', 'amber', yeouidoItinerary, true)}
+                    {currentView === 'children' && renderTimeline('어린이날 대작전!', '주이, 로이와 함께하는 완벽한 나들이', 'sky', childrenItinerary, false)}
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
